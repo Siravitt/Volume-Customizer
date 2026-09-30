@@ -1,35 +1,107 @@
 import SwiftUI
 
 struct MenuContentView: View {
-    let mixer: Mixer
+    let model: AppModel
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
             Text("Sound Space").font(.headline)
 
-            if mixer.apps.isEmpty {
+            SystemVolumeRow(volume: model.systemVolume)
+
+            Divider()
+
+            if !model.permission.status.allowsCapture {
+                PermissionBanner(model: model)
+            }
+
+            if model.mixer.apps.isEmpty {
                 Text("No apps are playing audio")
                     .foregroundStyle(.secondary)
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 16)
             } else {
-                ForEach(mixer.apps) { app in
-                    AppRow(app: app, mixer: mixer)
+                ForEach(model.mixer.apps) { app in
+                    AppRow(app: app, mixer: model.mixer)
                 }
+            }
+
+            if let update = model.updates.available {
+                Divider()
+                HStack {
+                    Image(systemName: "arrow.down.circle.fill").foregroundStyle(.tint)
+                    Text("Sound Space \(update.version) is available")
+                    Spacer()
+                    Link("Download", destination: update.url)
+                }
+                .font(.callout)
             }
 
             Divider()
 
-            HStack {
-                Spacer()
-                Button("Quit Sound Space") { NSApp.terminate(nil) }
-                    .keyboardShortcut("q")
-            }
+            Footer(loginItem: model.loginItem)
         }
         .padding(12)
         .frame(width: 360)
-        // Safety net in case a Core Audio notification was missed.
-        .onAppear { mixer.refresh() }
+        .onAppear { model.popoverOpened() }
+    }
+}
+
+private struct SystemVolumeRow: View {
+    let volume: SystemVolume
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            HStack(spacing: 8) {
+                Button { volume.toggleMute() } label: {
+                    Image(systemName: volume.isMuted ? "speaker.slash.fill" : "speaker.wave.3.fill")
+                        .frame(width: 20)
+                        .foregroundStyle(volume.isMuted ? .red : .primary)
+                }
+                .buttonStyle(.borderless)
+                .disabled(!volume.canMute)
+                .help(volume.isMuted ? "Unmute" : "Mute")
+
+                Slider(
+                    value: Binding(get: { volume.volume * 100 }, set: { volume.setVolume($0 / 100) }),
+                    in: 0...100
+                )
+                .disabled(!volume.canSetVolume)
+
+                Text(volume.canSetVolume ? "\(Int((volume.volume * 100).rounded()))%" : "–")
+                    .monospacedDigit()
+                    .foregroundStyle(volume.isMuted ? .secondary : .primary)
+                    .frame(width: 40, alignment: .trailing)
+            }
+            Text(volume.canSetVolume ? volume.deviceName : "\(volume.deviceName) — volume is controlled by the device")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+                .lineLimit(1)
+        }
+    }
+}
+
+private struct PermissionBanner: View {
+    let model: AppModel
+
+    var body: some View {
+        HStack(alignment: .top, spacing: 8) {
+            Image(systemName: "exclamationmark.triangle.fill").foregroundStyle(.orange)
+            VStack(alignment: .leading, spacing: 6) {
+                Text("Sound Space needs audio access to change app volumes.")
+                    .fixedSize(horizontal: false, vertical: true)
+                Button(model.permission.status == .denied ? "Open System Settings" : "Set Up…") {
+                    if model.permission.status == .denied {
+                        model.permission.openSystemSettings()
+                    } else {
+                        model.showOnboarding()
+                    }
+                }
+            }
+        }
+        .font(.callout)
+        .padding(8)
+        .background(.orange.opacity(0.12), in: RoundedRectangle(cornerRadius: 6))
     }
 }
 
@@ -78,6 +150,35 @@ private struct AppRow: View {
                 .monospacedDigit()
                 .foregroundStyle(setting.isMuted ? .secondary : .primary)
                 .frame(width: 40, alignment: .trailing)
+        }
+    }
+}
+
+private struct Footer: View {
+    let loginItem: LoginItem
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            HStack {
+                Toggle(
+                    "Launch at login",
+                    isOn: Binding(get: { loginItem.isEnabled || loginItem.needsApproval }, set: { loginItem.setEnabled($0) })
+                )
+                .toggleStyle(.checkbox)
+                Spacer()
+                Button("Quit Sound Space") { NSApp.terminate(nil) }
+                    .keyboardShortcut("q")
+            }
+            if loginItem.needsApproval {
+                HStack(spacing: 4) {
+                    Text("Allow Sound Space in Login Items.")
+                    Button("Open Settings") { loginItem.openSystemSettings() }
+                        .buttonStyle(.link)
+                }
+                .font(.caption)
+            } else if let error = loginItem.error {
+                Text(error).font(.caption).foregroundStyle(.red)
+            }
         }
     }
 }

@@ -41,6 +41,29 @@ extension AudioObjectID {
         return value
     }
 
+    func write<T>(
+        _ selector: AudioObjectPropertySelector,
+        scope: AudioObjectPropertyScope = kAudioObjectPropertyScopeGlobal,
+        value: T
+    ) throws {
+        var addr = address(selector, scope)
+        var value = value
+        let status = withUnsafeMutablePointer(to: &value) {
+            AudioObjectSetPropertyData(self, &addr, 0, nil, UInt32(MemoryLayout<T>.size), $0)
+        }
+        try check(status, "write \(fourCC(selector))")
+    }
+
+    func isSettable(
+        _ selector: AudioObjectPropertySelector,
+        scope: AudioObjectPropertyScope = kAudioObjectPropertyScopeGlobal
+    ) -> Bool {
+        var addr = address(selector, scope)
+        guard AudioObjectHasProperty(self, &addr) else { return false }
+        var settable: DarwinBoolean = false
+        return AudioObjectIsPropertySettable(self, &addr, &settable) == noErr && settable.boolValue
+    }
+
     func readString(_ selector: AudioObjectPropertySelector) throws -> String {
         var addr = address(selector, kAudioObjectPropertyScopeGlobal)
         var value: Unmanaged<CFString>?

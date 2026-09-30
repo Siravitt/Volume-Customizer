@@ -34,11 +34,23 @@ final class Mixer {
     /// the slider across 100% doesn't rebuild the tap repeatedly.
     private static let releaseDelay: Duration = .seconds(1)
 
-    /// `active: false` builds an inert mixer (used when the app is only a unit-test host).
-    init(store: SettingsStore = SettingsStore(), active: Bool = true) {
+    /// Whether taps may be created. Tapping without the audio-capture permission
+    /// yields silence, which would mute the app instead of turning it down.
+    var captureAllowed = false {
+        didSet {
+            guard captureAllowed != oldValue else { return }
+            if !captureAllowed { releaseAllTaps() }
+            refresh()
+        }
+    }
+
+    init(store: SettingsStore = SettingsStore()) {
         self.store = store
-        settings = active ? store.load() : [:]
-        guard active else { return }
+        settings = store.load()
+    }
+
+    /// Starts watching Core Audio. Not called when the app is only a unit-test host.
+    func start() {
         monitor.onProcessesChange = { [weak self] in self?.refresh() }
         monitor.onDefaultOutputChange = { [weak self] in self?.rebuildTaps() }
         monitor.start()
@@ -96,7 +108,7 @@ final class Mixer {
                 } catch {
                     errors[id] = "\(error)"
                 }
-            } else if setting(for: id).needsTap, errors[id] == nil {
+            } else if captureAllowed, setting(for: id).needsTap, errors[id] == nil {
                 createTap(for: app)
             }
         }
@@ -113,6 +125,10 @@ final class Mixer {
             .sorted { $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending }
         log.debug("refresh: \(self.apps.map(\.name), privacy: .public)")
         scheduleLingerRefresh(now: now)
+    }
+
+    private func releaseAllTaps() {
+        for id in Array(taps.keys) { releaseTap(id) }
     }
 
     /// Recreates every tap on the current default output device.
@@ -145,7 +161,7 @@ final class Mixer {
         pendingReleases[id] = nil
         if let tap = taps[id] {
             tap.gain = setting.gain
-        } else if let app = runningApps[id] {
+        } else if captureAllowed, let app = runningApps[id] {
             createTap(for: app)
         }
     }
