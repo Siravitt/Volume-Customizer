@@ -28,7 +28,7 @@ Free, open-source (MIT) macOS menu bar app for per-app volume control — a Soun
 
 - **M0 Spike** — done; removed after M1 (see git history).
 - **M1** — done. Menu bar app listing playing apps (grouped) with slider + mute, no persistence.
-- **M2** — Persistence, linger, follow output device, per-app errors.
+- **M2** — done. Persistence, linger, follow output device, per-app errors.
 - **M3** — Master slider, onboarding, launch at login, update check.
 - **M4** — Release pipeline: self-signed cert, universal build, GitHub Release, Homebrew tap, README.
 
