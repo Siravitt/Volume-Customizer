@@ -3,3 +3,4 @@ build/
 SoundSpace.xcodeproj/
 xcuserdata/
 Sources/SoundSpace/Info.plist
+dist/

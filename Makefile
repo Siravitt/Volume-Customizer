@@ -1,10 +1,14 @@
 export DEVELOPER_DIR := /Applications/Xcode.app/Contents/Developer
 
 BUILD_DIR := build
-XCODEBUILD := xcodebuild -project SoundSpace.xcodeproj -configuration Debug -derivedDataPath $(BUILD_DIR) -quiet
+# Sign with the project's self-signed certificate when it's in the keychain, so the
+# audio-capture permission survives rebuilds; otherwise fall back to ad-hoc signing.
+SIGN_IDENTITY := $(shell security find-identity -p codesigning 2>/dev/null | grep -q "Sound Space Self-Signed" && echo "Sound Space Self-Signed" || echo "-")
+XCODEBUILD := xcodebuild -project SoundSpace.xcodeproj -configuration Debug -derivedDataPath $(BUILD_DIR) -quiet \
+	CODE_SIGN_IDENTITY="$(SIGN_IDENTITY)"
 APP := $(BUILD_DIR)/Build/Products/Debug/SoundSpace.app
 
-.PHONY: project app open test clean
+.PHONY: project app open test release clean
 
 project:
 	xcodegen generate --quiet
@@ -19,5 +23,8 @@ open: app
 test: project
 	$(XCODEBUILD) -scheme SoundSpace test
 
+release:
+	scripts/release.sh
+
 clean:
-	rm -rf $(BUILD_DIR) SoundSpace.xcodeproj
+	rm -rf $(BUILD_DIR) dist SoundSpace.xcodeproj

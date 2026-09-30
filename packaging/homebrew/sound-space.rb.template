@@ -1,0 +1,31 @@
+cask "sound-space" do
+  version "{{VERSION}}"
+  sha256 "{{SHA256}}"
+
+  url "https://github.com/{{REPOSITORY}}/releases/download/v#{version}/SoundSpace-#{version}.zip"
+  name "Sound Space"
+  desc "Per-app volume control from the menu bar"
+  homepage "https://github.com/{{REPOSITORY}}"
+
+  depends_on macos: ">= :sonoma"
+
+  app "SoundSpace.app"
+
+  # Sound Space is signed with a self-signed certificate, not an Apple Developer ID,
+  # so Gatekeeper would refuse to open it. Removing the quarantine flag lets it launch.
+  postflight do
+    system_command "/usr/bin/xattr",
+                   args: ["-dr", "com.apple.quarantine", "#{appdir}/SoundSpace.app"]
+  end
+
+  uninstall quit: "dev.soundspace.SoundSpace"
+
+  zap trash: "~/Library/Preferences/dev.soundspace.SoundSpace.plist"
+
+  caveats <<~EOS
+    Sound Space is not notarized by Apple. This cask removes the quarantine
+    flag so macOS will open it. Source: https://github.com/{{REPOSITORY}}
+
+    Requires macOS 14.2 or later.
+  EOS
+end

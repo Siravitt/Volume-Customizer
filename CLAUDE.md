@@ -40,7 +40,10 @@ The Xcode project is generated; never edit `SoundSpace.xcodeproj` by hand — ed
 make app   # xcodegen + xcodebuild
 make open  # build, quit the running copy, launch
 make test  # unit tests (Swift Testing, hosted in the app)
+make release  # universal Release zip + Homebrew cask in dist/ (needs clean git tree)
 ```
+
+Signing: the self-signed identity "Sound Space Self-Signed" is in the login keychain; backup p12 + password in `~/.config/sound-space/signing/`. Losing it means every user re-grants the audio permission once.
 
 `xcode-select` on this machine points at CommandLineTools, so the Makefile sets `DEVELOPER_DIR` to `/Applications/Xcode.app`.
 
