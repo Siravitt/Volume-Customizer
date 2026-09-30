@@ -1,0 +1,53 @@
+name: SoundSpace
+options:
+  bundleIdPrefix: dev.soundspace
+  deploymentTarget:
+    macOS: "14.2"
+  createIntermediateGroups: true
+settings:
+  base:
+    SWIFT_VERSION: "6.0"
+    MACOSX_DEPLOYMENT_TARGET: "14.2"
+    CODE_SIGN_STYLE: Manual
+    CODE_SIGN_IDENTITY: "-"
+    DEVELOPMENT_TEAM: ""
+    ENABLE_HARDENED_RUNTIME: NO
+targets:
+  SoundSpace:
+    type: application
+    platform: macOS
+    sources: [Sources/SoundSpace]
+    info:
+      path: Sources/SoundSpace/Info.plist
+      properties:
+        CFBundleDisplayName: Sound Space
+        LSUIElement: true
+        NSAudioCaptureUsageDescription: Sound Space needs to capture other apps' audio so it can change their volume. Audio is processed locally and never recorded or sent anywhere.
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: dev.soundspace.SoundSpace
+    scheme:
+      testTargets: [SoundSpaceTests]
+  SoundSpaceTests:
+    type: bundle.unit-test
+    platform: macOS
+    sources: [Tests/SoundSpaceTests]
+    dependencies:
+      - target: SoundSpace
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+        TEST_HOST: "$(BUILT_PRODUCTS_DIR)/SoundSpace.app/Contents/MacOS/SoundSpace"
+        BUNDLE_LOADER: "$(TEST_HOST)"
+  Spike:
+    type: application
+    platform: macOS
+    sources: [Spike]
+    info:
+      path: Spike/Info.plist
+      properties:
+        CFBundleDisplayName: Sound Space Spike
+        NSAudioCaptureUsageDescription: Sound Space needs to capture other apps' audio so it can change their volume. Audio is processed locally and never recorded or sent anywhere.
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: dev.soundspace.Spike

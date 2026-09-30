@@ -1,0 +1,6 @@
+.DS_Store
+build/
+SoundSpace.xcodeproj/
+Spike/Info.plist
+xcuserdata/
+Sources/SoundSpace/Info.plist
