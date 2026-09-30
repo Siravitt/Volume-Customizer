@@ -12,7 +12,7 @@ Free, open-source (MIT) macOS menu bar app for per-app volume control — a Soun
 
 - macOS 14.2+ only. Uses Core Audio **Process Taps** (`CATapDescription`, `muteBehavior = .mutedWhenTapped`) + a private aggregate device whose main sub-device is the system default output. No HAL driver.
 - Only tap apps whose volume ≠ 100% or are muted; untouched apps play normally.
-- Volume 0–200% per app, soft limiter above unity. Mute per app.
+- Volume 0–100% per app (boost above 100% was dropped by the user). Mute per app.
 - Group helper processes (Chrome/Electron helpers) under their parent app.
 - List = apps currently playing + apps with saved settings that are running; rows linger 30 s after playback stops.
 - Persist volume/mute per bundle ID and re-apply automatically.
@@ -21,14 +21,14 @@ Free, open-source (MIT) macOS menu bar app for per-app volume control — a Soun
 - Onboarding screen explains the audio-capture permission before the system prompt.
 - Master (system volume) slider at top of popover. Launch at login via `SMAppService`, off by default.
 - Update check against GitHub Releases (notify only). No Sparkle in v1.
-- Out of scope for v1: per-app output device, EQ, level meters, keyboard shortcuts.
+- Out of scope for v1: boost above 100%, per-app output device, EQ, level meters, keyboard shortcuts.
 - Distribution: no paid Apple Developer account. Releases signed with one long-lived **self-signed certificate** so TCC keeps the permission across updates. GitHub Releases + own Homebrew tap. Universal binary.
 
 ## Milestones
 
-- **M0 Spike** — `Spike` target: pick one app, tap it, change its gain. Proves permission, aggregate device, latency.
-- **M1** — Menu bar app listing playing apps (grouped) with slider + mute, no persistence.
-- **M2** — Boost + limiter, persistence, linger, follow output device, per-app errors.
+- **M0 Spike** — done; removed after M1 (see git history).
+- **M1** — done. Menu bar app listing playing apps (grouped) with slider + mute, no persistence.
+- **M2** — Persistence, linger, follow output device, per-app errors.
 - **M3** — Master slider, onboarding, launch at login, update check.
 - **M4** — Release pipeline: self-signed cert, universal build, GitHub Release, Homebrew tap, README.
 
@@ -37,8 +37,9 @@ Free, open-source (MIT) macOS menu bar app for per-app volume control — a Soun
 The Xcode project is generated; never edit `SoundSpace.xcodeproj` by hand — edit `project.yml`.
 
 ```sh
-make spike      # xcodegen + xcodebuild the Spike target
-make open-spike # launch it
+make app   # xcodegen + xcodebuild
+make open  # build, quit the running copy, launch
+make test  # unit tests (Swift Testing, hosted in the app)
 ```
 
 `xcode-select` on this machine points at CommandLineTools, so the Makefile sets `DEVELOPER_DIR` to `/Applications/Xcode.app`.

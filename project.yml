@@ -39,15 +39,3 @@ targets:
         GENERATE_INFOPLIST_FILE: YES
         TEST_HOST: "$(BUILT_PRODUCTS_DIR)/SoundSpace.app/Contents/MacOS/SoundSpace"
         BUNDLE_LOADER: "$(TEST_HOST)"
-  Spike:
-    type: application
-    platform: macOS
-    sources: [Spike]
-    info:
-      path: Spike/Info.plist
-      properties:
-        CFBundleDisplayName: Sound Space Spike
-        NSAudioCaptureUsageDescription: Sound Space needs to capture other apps' audio so it can change their volume. Audio is processed locally and never recorded or sent anywhere.
-    settings:
-      base:
-        PRODUCT_BUNDLE_IDENTIFIER: dev.soundspace.Spike
