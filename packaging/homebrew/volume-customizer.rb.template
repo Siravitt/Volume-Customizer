@@ -7,15 +7,15 @@ cask "volume-customizer" do
   desc "Per-app volume control from the menu bar"
   homepage "https://github.com/{{REPOSITORY}}"
 
-  depends_on macos: ">= :sonoma"
+  depends_on macos: :sonoma
 
   app "VolumeCustomizer.app"
 
   # Volume Customizer is signed with a self-signed certificate, not an Apple Developer ID,
   # so Gatekeeper would refuse to open it. Removing the quarantine flag lets it launch.
-  postflight do
-    system_command "/usr/bin/xattr",
-                   args: ["-dr", "com.apple.quarantine", "#{appdir}/VolumeCustomizer.app"]
+  postflight_steps do
+    run "/usr/bin/xattr",
+        args: ["-dr", "com.apple.quarantine", "{{appdir}}/VolumeCustomizer.app"]
   end
 
   uninstall quit: "dev.volumecustomizer.VolumeCustomizer"
