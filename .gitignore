@@ -1,6 +1,6 @@
 .DS_Store
 build/
-SoundSpace.xcodeproj/
+VolumeCustomizer.xcodeproj/
 xcuserdata/
-Sources/SoundSpace/Info.plist
+Sources/VolumeCustomizer/Info.plist
 dist/

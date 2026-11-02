@@ -45,7 +45,7 @@ final class AppModel {
     func showOnboarding() {
         if onboardingWindow == nil {
             let window = NSWindow(contentViewController: NSHostingController(rootView: OnboardingView(model: self)))
-            window.title = "Welcome to Sound Space"
+            window.title = "Welcome to Volume Customizer"
             window.styleMask = [.titled, .closable]
             window.isReleasedWhenClosed = false
             window.center()

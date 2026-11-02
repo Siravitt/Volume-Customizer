@@ -8,7 +8,7 @@ final class LoginItem {
     private(set) var error: String?
 
     var isEnabled: Bool { status == .enabled }
-    /// The user must allow Sound Space in System Settings → General → Login Items.
+    /// The user must allow Volume Customizer in System Settings → General → Login Items.
     var needsApproval: Bool { status == .requiresApproval }
 
     func refresh() {

@@ -1,6 +1,6 @@
 import Foundation
 import Testing
-@testable import SoundSpace
+@testable import VolumeCustomizer
 
 struct AppVersionTests {
     @Test(arguments: [
@@ -28,14 +28,14 @@ struct AppVersionTests {
 }
 
 struct UpdateCheckerTests {
-    private let json = #"{"tag_name": "v0.2.0", "html_url": "https://github.com/example/sound-space/releases/tag/v0.2.0", "name": "0.2.0"}"#
+    private let json = #"{"tag_name": "v0.2.0", "html_url": "https://github.com/example/volume-customizer/releases/tag/v0.2.0", "name": "0.2.0"}"#
 
     @Test func reportsNewerRelease() throws {
         let release = try JSONDecoder().decode(GitHubRelease.self, from: Data(json.utf8))
 
         #expect(UpdateChecker.update(from: release, currentVersion: "0.1.0") == AvailableUpdate(
             version: "v0.2.0",
-            url: URL(string: "https://github.com/example/sound-space/releases/tag/v0.2.0")!
+            url: URL(string: "https://github.com/example/volume-customizer/releases/tag/v0.2.0")!
         ))
     }
 

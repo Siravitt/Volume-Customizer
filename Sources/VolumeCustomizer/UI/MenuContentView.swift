@@ -5,7 +5,7 @@ struct MenuContentView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
-            Text("Sound Space").font(.headline)
+            Text("Volume Customizer").font(.headline)
 
             SystemVolumeRow(volume: model.systemVolume)
 
@@ -30,7 +30,7 @@ struct MenuContentView: View {
                 Divider()
                 HStack {
                     Image(systemName: "arrow.down.circle.fill").foregroundStyle(.tint)
-                    Text("Sound Space \(update.version) is available")
+                    Text("Volume Customizer \(update.version) is available")
                     Spacer()
                     Link("Download", destination: update.url)
                 }
@@ -88,7 +88,7 @@ private struct PermissionBanner: View {
         HStack(alignment: .top, spacing: 8) {
             Image(systemName: "exclamationmark.triangle.fill").foregroundStyle(.orange)
             VStack(alignment: .leading, spacing: 6) {
-                Text("Sound Space needs audio access to change app volumes.")
+                Text("Volume Customizer needs audio access to change app volumes.")
                     .fixedSize(horizontal: false, vertical: true)
                 Button(model.permission.status == .denied ? "Open System Settings" : "Set Up…") {
                     if model.permission.status == .denied {
@@ -166,12 +166,12 @@ private struct Footer: View {
                 )
                 .toggleStyle(.checkbox)
                 Spacer()
-                Button("Quit Sound Space") { NSApp.terminate(nil) }
+                Button("Quit Volume Customizer") { NSApp.terminate(nil) }
                     .keyboardShortcut("q")
             }
             if loginItem.needsApproval {
                 HStack(spacing: 4) {
-                    Text("Allow Sound Space in Login Items.")
+                    Text("Allow Volume Customizer in Login Items.")
                     Button("Open Settings") { loginItem.openSystemSettings() }
                         .buttonStyle(.link)
                 }

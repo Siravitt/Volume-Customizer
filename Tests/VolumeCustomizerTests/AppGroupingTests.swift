@@ -1,5 +1,5 @@
 import Testing
-@testable import SoundSpace
+@testable import VolumeCustomizer
 
 struct AppGroupingTests {
     @Test(arguments: [

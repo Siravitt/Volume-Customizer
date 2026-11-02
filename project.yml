@@ -1,6 +1,6 @@
-name: SoundSpace
+name: VolumeCustomizer
 options:
-  bundleIdPrefix: dev.soundspace
+  bundleIdPrefix: dev.volumecustomizer
   deploymentTarget:
     macOS: "14.2"
   createIntermediateGroups: true
@@ -13,32 +13,32 @@ settings:
     DEVELOPMENT_TEAM: ""
     ENABLE_HARDENED_RUNTIME: NO
 targets:
-  SoundSpace:
+  VolumeCustomizer:
     type: application
     platform: macOS
-    sources: [Sources/SoundSpace]
+    sources: [Sources/VolumeCustomizer]
     info:
-      path: Sources/SoundSpace/Info.plist
+      path: Sources/VolumeCustomizer/Info.plist
       properties:
-        CFBundleDisplayName: Sound Space
+        CFBundleDisplayName: Volume Customizer
         CFBundleShortVersionString: "0.1.0"
         CFBundleVersion: "1"
-        SoundSpaceGitHubRepository: Siravitt/sound-space
+        VolumeCustomizerGitHubRepository: Siravitt/Volume-Customizer
         LSUIElement: true
-        NSAudioCaptureUsageDescription: Sound Space needs to capture other apps' audio so it can change their volume. Audio is processed locally and never recorded or sent anywhere.
+        NSAudioCaptureUsageDescription: Volume Customizer needs to capture other apps' audio so it can change their volume. Audio is processed locally and never recorded or sent anywhere.
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: dev.soundspace.SoundSpace
+        PRODUCT_BUNDLE_IDENTIFIER: dev.volumecustomizer.VolumeCustomizer
     scheme:
-      testTargets: [SoundSpaceTests]
-  SoundSpaceTests:
+      testTargets: [VolumeCustomizerTests]
+  VolumeCustomizerTests:
     type: bundle.unit-test
     platform: macOS
-    sources: [Tests/SoundSpaceTests]
+    sources: [Tests/VolumeCustomizerTests]
     dependencies:
-      - target: SoundSpace
+      - target: VolumeCustomizer
     settings:
       base:
         GENERATE_INFOPLIST_FILE: YES
-        TEST_HOST: "$(BUILT_PRODUCTS_DIR)/SoundSpace.app/Contents/MacOS/SoundSpace"
+        TEST_HOST: "$(BUILT_PRODUCTS_DIR)/VolumeCustomizer.app/Contents/MacOS/VolumeCustomizer"
         BUNDLE_LOADER: "$(TEST_HOST)"

@@ -55,7 +55,7 @@ final class UpdateChecker {
     @ObservationIgnored private var loop: Task<Void, Never>?
 
     init(bundle: Bundle = .main) {
-        let repository = bundle.object(forInfoDictionaryKey: "SoundSpaceGitHubRepository") as? String
+        let repository = bundle.object(forInfoDictionaryKey: "VolumeCustomizerGitHubRepository") as? String
         self.repository = repository?.isEmpty == false ? repository : nil
         currentVersion = bundle.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "0"
     }

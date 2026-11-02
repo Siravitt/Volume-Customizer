@@ -1,10 +1,10 @@
 import Foundation
 import Testing
-@testable import SoundSpace
+@testable import VolumeCustomizer
 
 struct SettingsStoreTests {
     private func makeStore() -> SettingsStore {
-        let suite = "SoundSpaceTests.\(UUID().uuidString)"
+        let suite = "VolumeCustomizerTests.\(UUID().uuidString)"
         return SettingsStore(defaults: UserDefaults(suiteName: suite)!)
     }
 

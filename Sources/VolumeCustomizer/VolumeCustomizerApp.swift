@@ -1,7 +1,7 @@
 import SwiftUI
 
 @main
-struct SoundSpaceApp: App {
+struct VolumeCustomizerApp: App {
     @State private var model: AppModel
 
     private static let isUnitTestHost = ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil
@@ -14,7 +14,7 @@ struct SoundSpaceApp: App {
     }
 
     var body: some Scene {
-        MenuBarExtra("Sound Space", systemImage: "slider.horizontal.3") {
+        MenuBarExtra("Volume Customizer", systemImage: "slider.horizontal.3") {
             MenuContentView(model: model)
         }
         .menuBarExtraStyle(.window)

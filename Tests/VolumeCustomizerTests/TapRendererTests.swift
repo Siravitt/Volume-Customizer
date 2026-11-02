@@ -1,6 +1,6 @@
 import CoreAudio
 import Testing
-@testable import SoundSpace
+@testable import VolumeCustomizer
 
 /// Owns an AudioBufferList of Float32 buffers with the given channel counts.
 private final class TestBuffers {

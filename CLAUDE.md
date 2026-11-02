@@ -1,6 +1,8 @@
-# Sound Space
+# Volume Customizer
 
 Free, open-source (MIT) macOS menu bar app for per-app volume control — a SoundSource alternative.
+
+Formerly "Sound Space". GitHub repo: `Siravitt/Volume-Customizer`. Homebrew tap: `siravitt/volume-customizer` (repo `Siravitt/homebrew-volume-customizer`). The signing identity "Sound Space Self-Signed" and its backup folder `~/.config/sound-space/` keep the old name on purpose — don't rename them without asking the user.
 
 ## Working agreement
 
@@ -34,7 +36,7 @@ Free, open-source (MIT) macOS menu bar app for per-app volume control — a Soun
 
 ## Build
 
-The Xcode project is generated; never edit `SoundSpace.xcodeproj` by hand — edit `project.yml`.
+The Xcode project is generated; never edit `VolumeCustomizer.xcodeproj` by hand — edit `project.yml`.
 
 ```sh
 make app   # xcodegen + xcodebuild

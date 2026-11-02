@@ -69,7 +69,7 @@ final class AppTap {
 
         let outputUID = try AudioObjectID.defaultOutputDevice().readString(kAudioDevicePropertyDeviceUID)
         let aggregateDescription: [String: Any] = [
-            kAudioAggregateDeviceNameKey: "Sound Space",
+            kAudioAggregateDeviceNameKey: "Volume Customizer",
             kAudioAggregateDeviceUIDKey: UUID().uuidString,
             kAudioAggregateDeviceMainSubDeviceKey: outputUID,
             kAudioAggregateDeviceIsPrivateKey: true,
