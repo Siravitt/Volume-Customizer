@@ -8,6 +8,7 @@ cd "$(dirname "$0")/.."
 
 export DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer
 IDENTITY="Sound Space Self-Signed"
+BUILD_DIR=build.noindex  # same as the Makefile; Spotlight skips it
 REPOSITORY=$(sed -n 's/^ *VolumeCustomizerGitHubRepository: *//p' project.yml)
 VERSION=$(sed -n 's/^ *CFBundleShortVersionString: *"\(.*\)"/\1/p' project.yml)
 
@@ -22,18 +23,18 @@ echo "==> Volume Customizer $VERSION"
 xcodegen generate --quiet
 
 echo "==> Running tests"
-xcodebuild -project VolumeCustomizer.xcodeproj -scheme VolumeCustomizer -configuration Debug -derivedDataPath build \
+xcodebuild -project VolumeCustomizer.xcodeproj -scheme VolumeCustomizer -configuration Debug -derivedDataPath "$BUILD_DIR" \
     CODE_SIGN_IDENTITY="$IDENTITY" -quiet test
 
 echo "==> Building universal Release"
-rm -rf build/release dist
+rm -rf "$BUILD_DIR/release" dist
 mkdir -p dist
-xcodebuild -project VolumeCustomizer.xcodeproj -scheme VolumeCustomizer -configuration Release -derivedDataPath build/release \
+xcodebuild -project VolumeCustomizer.xcodeproj -scheme VolumeCustomizer -configuration Release -derivedDataPath "$BUILD_DIR/release" \
     ARCHS="arm64 x86_64" ONLY_ACTIVE_ARCH=NO \
     CODE_SIGN_IDENTITY="$IDENTITY" OTHER_CODE_SIGN_FLAGS="--timestamp=none" \
     -quiet build
 
-APP=build/release/Build/Products/Release/VolumeCustomizer.app
+APP="$BUILD_DIR/release/Build/Products/Release/VolumeCustomizer.app"
 codesign --verify --strict "$APP"
 codesign -dr - "$APP" 2>&1 | grep -q "certificate leaf" || fail "app is not signed with '$IDENTITY'"
 ARCHS=$(lipo -archs "$APP/Contents/MacOS/VolumeCustomizer")

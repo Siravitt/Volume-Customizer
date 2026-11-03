@@ -1,6 +1,7 @@
 export DEVELOPER_DIR := /Applications/Xcode.app/Contents/Developer
 
-BUILD_DIR := build
+# Spotlight skips folders ending in .noindex, so built copies don't show up next to the installed app.
+BUILD_DIR := build.noindex
 # Sign with the project's self-signed certificate when it's in the keychain, so the
 # audio-capture permission survives rebuilds; otherwise fall back to ad-hoc signing.
 SIGN_IDENTITY := $(shell security find-identity -p codesigning 2>/dev/null | grep -q "Sound Space Self-Signed" && echo "Sound Space Self-Signed" || echo "-")
